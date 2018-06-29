@@ -1,0 +1,40 @@
+#!/bin/bash
+
+if [ -z "$1" ] || [ -z "$2" ]; then
+  echo "Usage: md2html [MD FILENAME] [HTML FILENAME]"
+  exit 0
+fi
+
+if [ ! -f "$1" ]; then
+  echo "File '$1' not exist!" 1>&2
+  exit 0
+fi
+
+sPath=$(dirname $BASH_SOURCE)
+sPath=$(cd $sPath && pwd)
+
+markdown=$(perl "${sPath}/markdown.pl" "$1")
+
+h1='<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="'
+
+css='style.css'
+
+h2='">
+</head>
+<body>
+<article class="markdown-body">'
+
+header="${h1}${css}${h2}"
+
+tailer='</article>
+</body>'
+
+echo "${header}${markdown}${tailer}" > "$2"
+
+if [ ! -f "$cssfile" ];then
+  cp -v "$sPath/$css" ./
+fi
